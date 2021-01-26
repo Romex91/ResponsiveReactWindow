@@ -31,6 +31,13 @@ export function ResponsiveReactWindow<
   ItemProps extends { key: string; focused?: boolean }
 >(props: ResponsiveReactWindowProps<ItemProps>) {
   const scrollableContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // TODO: write memoization tests
+  const memoizedComponent = React.useMemo(
+    () => React.memo(withRefContainer<ItemProps>(props.ItemComponent)),
+    [props.ItemComponent]
+  );
+
   return (
     <div
       ref={scrollableContainerRef}
@@ -53,7 +60,7 @@ export function ResponsiveReactWindow<
     >
       <CustomReactWindow
         entries={props.entries}
-        ItemComponent={withRefContainer<ItemProps>(props.ItemComponent)}
+        ItemComponent={memoizedComponent}
         PlaceholderComponent={
           props.direction === 'x' ? PlaceholderX : PlaceholderY
         }

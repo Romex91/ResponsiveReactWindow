@@ -22,7 +22,7 @@ function Item(props: { initialArea: number }) {
 
   return (
     <div ref={ref} className='item'>
-      This item adjusts its height on winow resize. <br />
+      This item adjusts its height on window resize. <br />
       Area:
       <input
         type='number'

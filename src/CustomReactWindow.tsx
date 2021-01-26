@@ -10,7 +10,7 @@ interface VirtualizedItemProps<ItemProps> {
 
 class VirtualizedItem<
   ItemProps extends { key: string }
-> extends React.PureComponent<VirtualizedItemProps<ItemProps>> {
+> extends React.Component<VirtualizedItemProps<ItemProps>> {
   private _ref = React.createRef<HTMLElement>();
   _resizeObserver?: ResizeObserver;
 
@@ -66,9 +66,6 @@ export function CustomReactWindow<
   );
 
   const [realSizesMap, setRealSizesMap] = React.useState(new Map());
-  // Beware of maintainig VirtualizedItem pureness during refactoring.
-  // If one entry has changed it shouldn't lead to render() calls for other
-  // entries.
 
   const onSizeChanged = React.useCallback((key: string, size: number) => {
     setRealSizesMap((oldMap) => {
