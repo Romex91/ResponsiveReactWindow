@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { ResponsiveReactWindow } from '.';
 
-describe('ExampleComponent', () => {
+describe('ResponsiveReactWindow', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
-})
+    expect(ResponsiveReactWindow).toBeTruthy();
+  });
+});
