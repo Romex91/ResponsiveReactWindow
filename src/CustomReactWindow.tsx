@@ -8,10 +8,9 @@ interface VirtualizedItemProps<ItemProps> {
 }
 
 class VirtualizedItem<
-  ItemProps extends { key: string },
-  RefType extends HTMLElement
+  ItemProps extends { key: string }
 > extends React.PureComponent<VirtualizedItemProps<ItemProps>> {
-  private _ref = React.createRef<RefType>();
+  private _ref = React.createRef<HTMLElement>();
   _resizeObserver?: ResizeObserver;
 
   private onHeightChanged = () => {
@@ -39,7 +38,6 @@ class VirtualizedItem<
 
   render() {
     const { ItemComponent, itemProps } = this.props;
-
     return <ItemComponent ref={this._ref} {...itemProps} />;
   }
 }
@@ -47,7 +45,7 @@ class VirtualizedItem<
 interface VirtualizedListProps<ItemProps> {
   entries: ItemProps[];
   defaultItemHeight?: number;
-  scrollableContainerRef: React.RefObject<HTMLDivElement>;
+  scrollableContainerRef: React.RefObject<HTMLElement>;
   ItemComponent: ReturnType<typeof React.forwardRef>;
   PlaceholderComponent: React.ComponentType<{ height: number }>;
 }

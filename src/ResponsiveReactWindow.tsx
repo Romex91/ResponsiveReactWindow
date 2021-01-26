@@ -24,7 +24,7 @@ function Placeholder(props: { height: number }) {
 export function ResponsiveReactWindow<
   ItemProps extends { key: string; focused?: boolean }
 >(props: ResponsiveReactWindowProps<ItemProps>) {
-  const scrollableContainerRef = React.useRef(null);
+  const scrollableContainerRef = React.useRef<HTMLDivElement>(null);
   return (
     <div
       ref={scrollableContainerRef}
