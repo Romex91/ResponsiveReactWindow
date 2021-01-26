@@ -21,19 +21,7 @@ function Item(props: { initialArea: number }) {
   });
 
   return (
-    <div
-      ref={ref}
-      style={{
-        width: '95%',
-        backgroundColor: 'lightGray',
-        margin: 'auto',
-        marginBottom: 10,
-
-        fontSize: 24,
-        textAlign: 'center',
-        verticalAlign: 'middle'
-      }}
-    >
+    <div ref={ref} className='item'>
       This item adjusts its height on winow resize. <br />
       Area:
       <input
@@ -59,7 +47,15 @@ const App = () => {
     });
   }
 
-  return <ResponsiveReactWindow entries={entries} ItemComponent={Item} />;
+  return (
+    <ResponsiveReactWindow
+      direction='y'
+      width='100vw'
+      height='100vh'
+      entries={entries}
+      ItemComponent={Item}
+    />
+  );
 };
 
 export default App;

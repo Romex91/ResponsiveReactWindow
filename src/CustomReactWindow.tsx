@@ -2,9 +2,10 @@ import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 
 interface VirtualizedItemProps<ItemProps> {
-  onHeightChanged(key: string, heigh: number): void;
+  onSizeChanged(key: string, heigh: number): void;
   itemProps: ItemProps;
   ItemComponent: ReturnType<typeof React.forwardRef>;
+  direction: 'x' | 'y';
 }
 
 class VirtualizedItem<
@@ -13,18 +14,20 @@ class VirtualizedItem<
   private _ref = React.createRef<HTMLElement>();
   _resizeObserver?: ResizeObserver;
 
-  private onHeightChanged = () => {
+  private onSizeChanged = () => {
     if (this._ref.current) {
-      this.props.onHeightChanged(
+      this.props.onSizeChanged(
         this.props.itemProps.key,
-        this._ref.current.offsetHeight
+        this.props.direction === 'y'
+          ? this._ref.current.offsetHeight
+          : this._ref.current.offsetWidth
       );
     }
   };
 
   componentDidMount() {
     if (this._ref.current) {
-      this._resizeObserver = new ResizeObserver(this.onHeightChanged);
+      this._resizeObserver = new ResizeObserver(this.onSizeChanged);
       this._resizeObserver.observe(this._ref.current);
     }
   }
@@ -44,10 +47,11 @@ class VirtualizedItem<
 
 interface VirtualizedListProps<ItemProps> {
   entries: ItemProps[];
-  defaultItemHeight?: number;
+  defaultItemSize?: number;
   scrollableContainerRef: React.RefObject<HTMLElement>;
   ItemComponent: ReturnType<typeof React.forwardRef>;
-  PlaceholderComponent: React.ComponentType<{ height: number }>;
+  PlaceholderComponent: React.ComponentType<{ size: number }>;
+  direction: 'x' | 'y';
 }
 
 export function CustomReactWindow<
@@ -56,32 +60,34 @@ export function CustomReactWindow<
   const [parentOffset, setParentOffset] = React.useState(0);
   const parentOffsetMeasuringRef = React.useRef<HTMLDivElement>(null);
 
-  const [scrollY, setScrollY] = React.useState(0);
-  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+  const [scroll, setScroll] = React.useState(0);
+  const [windowSize, setWindowSize] = React.useState(
+    props.direction === 'y' ? window.innerHeight : window.innerWidth
+  );
 
-  const [realHeightsMap, setRealHeightsMap] = React.useState(new Map());
+  const [realSizesMap, setRealSizesMap] = React.useState(new Map());
   // Beware of maintainig VirtualizedItem pureness during refactoring.
   // If one entry has changed it shouldn't lead to render() calls for other
   // entries.
 
-  const onHeightChanged = React.useCallback((key: string, height: number) => {
-    setRealHeightsMap((oldMap) => {
+  const onSizeChanged = React.useCallback((key: string, size: number) => {
+    setRealSizesMap((oldMap) => {
       const newMap = new Map(oldMap);
 
-      newMap.set(key, height);
+      newMap.set(key, size);
       return newMap;
     });
   }, []);
 
   const keys = new Set(props.entries.map((x) => x.key));
   const keysToDelete: string[] = [];
-  realHeightsMap.forEach((_value, key) => {
+  realSizesMap.forEach((_value, key) => {
     if (!keys.has(key)) {
       keysToDelete.push(key);
     }
   });
   if (keysToDelete.length > 0) {
-    setRealHeightsMap((oldMap) => {
+    setRealSizesMap((oldMap) => {
       const newMap = new Map(oldMap);
       keysToDelete.forEach((key) => {
         if (oldMap.has(key)) newMap.delete(key);
@@ -93,8 +99,14 @@ export function CustomReactWindow<
   React.useEffect(() => {
     const onResizeOrScroll = () => {
       if (props.scrollableContainerRef.current)
-        setScrollY(props.scrollableContainerRef.current.scrollTop);
-      setWindowHeight(window.innerHeight);
+        setScroll(
+          props.direction === 'y'
+            ? props.scrollableContainerRef.current.scrollTop
+            : props.scrollableContainerRef.current.scrollLeft
+        );
+      setWindowSize(
+        props.direction === 'y' ? window.innerHeight : window.innerWidth
+      );
 
       if (parentOffsetMeasuringRef.current) {
         setParentOffset(parentOffsetMeasuringRef.current.offsetTop);
@@ -109,56 +121,51 @@ export function CustomReactWindow<
   }, [props.scrollableContainerRef]);
 
   const visibleEntries: JSX.Element[] = [];
-  let currentHeight = 0;
+  let currentSize = 0;
   let placeholderTop = 0;
   let placeholderBottom = 0;
 
   for (const entry of props.entries) {
-    let entryHeight = props.defaultItemHeight ?? 80;
-    if (realHeightsMap.has(entry.key)) {
-      entryHeight = realHeightsMap.get(entry.key);
+    let entrySize = props.defaultItemSize ?? 80;
+    if (realSizesMap.has(entry.key)) {
+      entrySize = realSizesMap.get(entry.key);
     }
 
-    if (
-      currentHeight + entryHeight <
-      scrollY - parentOffset - window.innerHeight
-    ) {
+    if (currentSize + entrySize < scroll - parentOffset - windowSize) {
       if (entry.focused && !!props.scrollableContainerRef.current) {
-        props.scrollableContainerRef.current.scrollTop = currentHeight;
+        props.scrollableContainerRef.current.scrollTop = currentSize;
       }
 
-      placeholderTop += entryHeight;
-    } else if (currentHeight < scrollY - parentOffset + 2 * windowHeight) {
+      placeholderTop += entrySize;
+    } else if (currentSize < scroll - parentOffset + 2 * windowSize) {
       visibleEntries.push(
         <VirtualizedItem
           key={entry.key}
-          onHeightChanged={onHeightChanged}
+          onSizeChanged={onSizeChanged}
           itemProps={entry}
+          direction={props.direction}
           ItemComponent={props.ItemComponent}
         />
       );
     } else {
       if (entry.focused && props.scrollableContainerRef.current) {
-        props.scrollableContainerRef.current.scrollTop = currentHeight;
+        props.scrollableContainerRef.current.scrollTop = currentSize;
       }
 
-      placeholderBottom += entryHeight;
+      placeholderBottom += entrySize;
     }
-    currentHeight += entryHeight;
+    currentSize += entrySize;
   }
   if (placeholderTop !== 0) {
     visibleEntries.unshift(
-      <props.PlaceholderComponent
-        height={placeholderTop}
-        key='placeholderTop'
-      />
+      <props.PlaceholderComponent size={placeholderTop} key='placeholderTop' />
     );
   }
 
   if (placeholderBottom !== 0) {
     visibleEntries.push(
       <props.PlaceholderComponent
-        height={placeholderBottom}
+        size={placeholderBottom}
         key='placeholderBottom'
       />
     );

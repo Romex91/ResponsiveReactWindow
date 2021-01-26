@@ -5,6 +5,9 @@ interface ResponsiveReactWindowProps<ItemProps> {
   entries: ItemProps[];
   defaultItemHeight?: number;
   ItemComponent: React.ComponentType<ItemProps>;
+  direction?: 'x' | 'y';
+  width?: string;
+  height?: string;
 }
 
 function withRefContainer<ItemProps>(
@@ -17,8 +20,11 @@ function withRefContainer<ItemProps>(
   ));
 }
 
-function Placeholder(props: { height: number }) {
-  return <div style={{ height: props.height }}> </div>;
+function PlaceholderY(props: { size: number }) {
+  return <div style={{ height: props.size }}> </div>;
+}
+function PlaceholderX(props: { size: number }) {
+  return <div style={{ minWidth: props.size, height: '100%' }}> </div>;
 }
 
 export function ResponsiveReactWindow<
@@ -28,20 +34,32 @@ export function ResponsiveReactWindow<
   return (
     <div
       ref={scrollableContainerRef}
-      style={{
-        height: '100%',
-        maxHeight: '100vh',
-        width: '100%',
-        overflowY: 'scroll',
-        willChange: 'transform'
-      }}
+      style={
+        props.direction === 'x'
+          ? {
+              width: props.width ?? '100%',
+              height: props.height ?? '100%',
+              willChange: 'transform',
+              overflowX: 'scroll',
+              display: 'flex'
+            }
+          : {
+              width: props.width ?? '100%',
+              height: props.height ?? '100%',
+              willChange: 'transform',
+              overflowY: 'scroll'
+            }
+      }
     >
       <CustomReactWindow
         entries={props.entries}
         ItemComponent={withRefContainer<ItemProps>(props.ItemComponent)}
-        PlaceholderComponent={Placeholder}
+        PlaceholderComponent={
+          props.direction === 'x' ? PlaceholderX : PlaceholderY
+        }
         scrollableContainerRef={scrollableContainerRef}
-        defaultItemHeight={props.defaultItemHeight}
+        defaultItemSize={props.defaultItemHeight}
+        direction={props.direction ?? 'y'}
       />
     </div>
   );
