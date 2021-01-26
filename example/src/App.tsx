@@ -2,27 +2,21 @@ import React from 'react';
 
 import { ResponsiveReactWindow } from 'responsive-react-window';
 
+import ResizeObserver from 'rc-resize-observer';
+
 // A div maintaining its area by adjusting its height.
-function Item(props: { initialArea: number }) {
+function Item(props: { initialArea: number; width: number }) {
   const [area, setArea] = React.useState(props.initialArea);
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const onSizeChange = React.useCallback(() => {
-    if (!ref.current) return;
-    ref.current.style.minHeight = area / ref.current.clientWidth + 'px';
-  }, [area]);
-
-  React.useEffect(onSizeChange, [onSizeChange]);
   React.useEffect(() => {
-    window.addEventListener('resize', onSizeChange);
-    return () => {
-      window.removeEventListener('resize', onSizeChange);
-    };
-  });
+    if (!ref.current) return;
+    ref.current.style.minHeight = area / props.width + 'px';
+  }, [area, props.width]);
 
   return (
     <div ref={ref} className='item'>
-      This item adjusts its height on window resize. <br />
+      This item adjusts its height on resize. <br />
       Area:
       <input
         type='number'
@@ -42,19 +36,27 @@ const App = () => {
   const entries: { initialArea: number; key: string }[] = [];
   for (let i = 0; i < 1000; i++) {
     entries.push({
-      initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 5000,
+      initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 2000,
       key: i.toString()
     });
   }
 
+  const [width, setWidth] = React.useState(200);
+
   return (
-    <ResponsiveReactWindow
-      direction='y'
-      width='100vw'
-      height='100vh'
-      entries={entries}
-      ItemComponent={Item}
-    />
+    <ResizeObserver
+      onResize={({ width }) => {
+        setWidth(width);
+      }}
+    >
+      <div className='resizable'>
+        <ResponsiveReactWindow
+          direction='y'
+          entries={entries.map((entry) => ({ width, ...entry }))}
+          ItemComponent={Item}
+        />
+      </div>
+    </ResizeObserver>
   );
 };
 
