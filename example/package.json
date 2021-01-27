@@ -18,8 +18,10 @@
     "@types/node": "file:../node_modules/@types/node",
     "@types/react": "file:../node_modules/@types/react",
     "@types/react-dom": "file:../node_modules/@types/react-dom",
+    "codemirror": "^5.59.2",
     "rc-resize-observer": "^1.0.0",
     "react": "file:../node_modules/react",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "file:../node_modules/react-dom",
     "react-router-dom": "^5.2.0",
     "react-scripts": "file:../node_modules/react-scripts",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
+    "@types/codemirror": "0.0.106",
     "@types/react-router-dom": "^5.1.7"
   },
   "eslintConfig": {

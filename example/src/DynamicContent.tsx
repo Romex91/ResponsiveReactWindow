@@ -36,7 +36,7 @@ export default function DynamicContent() {
   const entries: { initialArea: number; key: string }[] = [];
   for (let i = 0; i < 1000; i++) {
     entries.push({
-      initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 2000,
+      initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 1000,
       key: i.toString()
     });
   }

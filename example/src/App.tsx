@@ -11,6 +11,8 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import DynamicContent from './DynamicContent';
 
+import { Controlled as CodeMirror } from 'react-codemirror2';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,12 +29,40 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      height: '100vh',
       backgroundColor: theme.palette.background.default,
-      padding: theme.spacing(3)
+      padding: theme.spacing(3),
+
+      [theme.breakpoints.up('md')]: {
+        display: 'flex',
+        height: '100vh'
+      }
     }
   })
 );
+
+function Code(props: { fileName: string }) {
+  const [value, setValue] = React.useState('');
+  React.useEffect(() => {
+    (async () => {
+      const content = await fetch(
+        process.env.PUBLIC_URL + 'sources/' + props.fileName
+      );
+      setValue(await content.text());
+    })();
+  }, []);
+
+  return (
+    <CodeMirror
+      value={value}
+      options={{
+        mode: { name: 'jsx', base: { name: 'javascript', typescript: true } },
+        lineNumbers: true
+      }}
+      onBeforeChange={() => {}}
+      onChange={() => {}}
+    />
+  );
+}
 
 export default function App() {
   const classes = useStyles();
@@ -66,9 +96,7 @@ export default function App() {
           <Switch>
             <Route path='/DynamicContent'>
               <DynamicContent />
-            </Route>
-            <Route path='/users'>
-              <Users />
+              <Code fileName={'DynamicContent.tsx'}></Code>
             </Route>
             <Route path='/'>
               <Home />

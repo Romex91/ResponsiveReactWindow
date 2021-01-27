@@ -1,3 +1,7 @@
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/jsx/jsx.js';
 import './index.css';
 
 import React from 'react';
