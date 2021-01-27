@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { ResponsiveReactWindow } from 'responsive-react-window';
-
 import ResizeObserver from 'rc-resize-observer';
+
+import './styles.css';
 
 // A div maintaining its area by adjusting its height.
 function Item(props: { initialArea: number; width: number }) {

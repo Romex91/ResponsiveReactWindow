@@ -1,5 +1,4 @@
 import {
-  Button,
   createStyles,
   Drawer,
   List,
@@ -9,7 +8,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import DynamicContent from './DynamicContent';
+import DynamicContent from './examples/DynamicContent';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
 
@@ -45,7 +44,7 @@ function Code(props: { fileName: string }) {
   React.useEffect(() => {
     (async () => {
       const content = await fetch(
-        process.env.PUBLIC_URL + 'sources/' + props.fileName
+        process.env.PUBLIC_URL + 'examples/' + props.fileName
       );
       setValue(await content.text());
     })();
