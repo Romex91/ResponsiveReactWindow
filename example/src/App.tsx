@@ -1,63 +1,89 @@
+import {
+  Button,
+  createStyles,
+  Drawer,
+  List,
+  ListItem,
+  makeStyles,
+  Theme
+} from '@material-ui/core';
 import React from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import DynamicContent from './DynamicContent';
 
-import { ResponsiveReactWindow } from 'responsive-react-window';
+const drawerWidth = 240;
 
-import ResizeObserver from 'rc-resize-observer';
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex'
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0
+    },
+    drawerPaper: {
+      width: drawerWidth
+    },
+    content: {
+      flexGrow: 1,
+      height: '100vh',
+      backgroundColor: theme.palette.background.default,
+      padding: theme.spacing(3)
+    }
+  })
+);
 
-// A div maintaining its area by adjusting its height.
-function Item(props: { initialArea: number; width: number }) {
-  const [area, setArea] = React.useState(props.initialArea);
-  const ref = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!ref.current) return;
-    ref.current.style.minHeight = area / props.width + 'px';
-  }, [area, props.width]);
+export default function App() {
+  const classes = useStyles();
 
   return (
-    <div ref={ref} className='item'>
-      This item adjusts its height on resize. <br />
-      Area:
-      <input
-        type='number'
-        min='10000'
-        step='10000'
-        value={area}
-        onChange={(e) => {
-          setArea(Number(e.target.value));
-        }}
-      ></input>
-      pixels
+    <div className={classes.root}>
+      <Router>
+        <Drawer
+          className={classes.drawer}
+          variant='permanent'
+          open={true}
+          classes={{
+            paper: classes.drawerPaper
+          }}
+          anchor='left'
+        >
+          <List>
+            <ListItem>
+              <Link to='/'>Home</Link>
+            </ListItem>
+            <ListItem>
+              <Link to='/DynamicContent'>Items Can Resize</Link>
+            </ListItem>
+            <ListItem>
+              <Link to='/users'>Users</Link>
+            </ListItem>
+          </List>
+        </Drawer>
+
+        <main className={classes.content}>
+          <Switch>
+            <Route path='/DynamicContent'>
+              <DynamicContent />
+            </Route>
+            <Route path='/users'>
+              <Users />
+            </Route>
+            <Route path='/'>
+              <Home />
+            </Route>
+          </Switch>
+        </main>
+      </Router>
     </div>
   );
 }
 
-const App = () => {
-  const entries: { initialArea: number; key: string }[] = [];
-  for (let i = 0; i < 1000; i++) {
-    entries.push({
-      initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 2000,
-      key: i.toString()
-    });
-  }
+function Home() {
+  return <h2>Home</h2>;
+}
 
-  const [width, setWidth] = React.useState(200);
-
-  return (
-    <ResizeObserver
-      onResize={({ width }) => {
-        setWidth(width);
-      }}
-    >
-      <div className='resizable'>
-        <ResponsiveReactWindow
-          direction='y'
-          entries={entries.map((entry) => ({ width, ...entry }))}
-          ItemComponent={Item}
-        />
-      </div>
-    </ResizeObserver>
-  );
-};
-
-export default App;
+function Users() {
+  return <h2>Users</h2>;
+}
