@@ -1,18 +1,24 @@
 import {
   createStyles,
+  Divider,
   Drawer,
   List,
   ListItem,
   makeStyles,
-  Theme
+  Theme,
+  Typography
 } from '@material-ui/core';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import DynamicContent from './examples/DynamicContent';
+import BasicUsage from './examples/BasicUsage';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import Horizontal from './examples/Horizontal';
+import TwoD from './examples/TwoD';
+import ScrollToItem from './examples/ScrollToItem';
 
-const drawerWidth = 240;
+const drawerWidth = 160;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,7 +61,7 @@ function Code(props: { fileName: string }) {
       value={value}
       options={{
         mode: { name: 'jsx', base: { name: 'javascript', typescript: true } },
-        lineNumbers: true
+        lineNumbers: false
       }}
       onBeforeChange={() => {}}
       onChange={() => {}}
@@ -80,13 +86,40 @@ export default function App() {
         >
           <List>
             <ListItem>
-              <Link to='/'>Home</Link>
+              <Link to='/'>
+                <Typography>Basic usage</Typography>
+              </Link>
             </ListItem>
             <ListItem>
-              <Link to='/DynamicContent'>Items Can Resize</Link>
+              <Link to='/Horizontal'>
+                <Typography>Horizontal </Typography>
+              </Link>
             </ListItem>
             <ListItem>
-              <Link to='/users'>Users</Link>
+              <Link to='/DynamicContent'>
+                <Typography>Items can resize </Typography>
+              </Link>
+            </ListItem>
+
+            <ListItem>
+              <Link to='/ScrollToItem'>
+                <Typography>Scroll to specific item </Typography>
+              </Link>
+            </ListItem>
+
+            <Divider></Divider>
+            <ListItem>
+              <Typography variant='h6'>Advanced: </Typography>
+            </ListItem>
+            <ListItem>
+              <Link to='/ResponsiveTable'>
+                <Typography>Responsive table </Typography>
+              </Link>
+            </ListItem>
+            <ListItem>
+              <Link to='/TwoD'>
+                <Typography>2-D table</Typography>
+              </Link>
             </ListItem>
           </List>
         </Drawer>
@@ -95,22 +128,27 @@ export default function App() {
           <Switch>
             <Route path='/DynamicContent'>
               <DynamicContent />
-              <Code fileName={'DynamicContent.tsx'}></Code>
+              <Code fileName={'DynamicContent.jsx'}></Code>
             </Route>
             <Route path='/'>
-              <Home />
+              <BasicUsage />
+              <Code fileName={'BasicUsage.jsx'}></Code>
+            </Route>
+            <Route path='/Horizontal'>
+              <Horizontal></Horizontal>
+              <Code fileName={'Horizontal.jsx'}></Code>
+            </Route>
+            <Route path='/TwoD'>
+              <TwoD></TwoD>
+              <Code fileName={'TwoD.jsx'}></Code>
+            </Route>
+            <Route path='/ScrollToItem'>
+              <ScrollToItem></ScrollToItem>
+              <Code fileName={'ScrollToItem.jsx'}></Code>
             </Route>
           </Switch>
         </main>
       </Router>
     </div>
   );
-}
-
-function Home() {
-  return <h2>Home</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
 }
