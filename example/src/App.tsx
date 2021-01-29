@@ -131,14 +131,29 @@ export default function App() {
                 <DynamicContent />
                 <DragByTheCornerToResize />
               </div>
-              <Code fileName={'DynamicContent.jsx'}></Code>
+              <div style={{ width: '100%' }}>
+                <Typography variant='h6'>
+                  This code is similar to <Link to='/'>Basic usage</Link>. It
+                  just has more sofisticated items.
+                </Typography>
+
+                <Code fileName={'DynamicContent.jsx'}></Code>
+              </div>
             </Route>
             <Route path='/Horizontal'>
               <div>
                 <Horizontal />
                 <DragByTheCornerToResize />
               </div>
-              <Code fileName={'Horizontal.jsx'}></Code>
+              <div style={{ width: '100%' }}>
+                <Typography variant='h6'>
+                  The horizontal responsive scrollbar is ridiculously hard to
+                  implement in CSS. The code below has to have bugs, use it at
+                  your own risk.
+                </Typography>
+
+                <Code fileName={'Horizontal.jsx'}></Code>
+              </div>
             </Route>
             <Route path='/ScrollToItem'>
               <div>
