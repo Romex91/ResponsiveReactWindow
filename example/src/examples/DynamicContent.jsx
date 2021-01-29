@@ -35,7 +35,7 @@ function Item({ initialArea, width }) {
 
 let index = 0;
 // Data
-const entries = new Array(1000).fill(true).map(() => ({
+const entries = new Array(1000).fill(null).map(() => ({
   // key is mandatory.
   key: (index++).toString(),
   initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 1000

@@ -54,7 +54,7 @@ function Code(props: { fileName: string }) {
       );
       setValue(await content.text());
     })();
-  }, []);
+  }, [props.fileName]);
 
   return (
     <CodeMirror
@@ -91,34 +91,27 @@ export default function App() {
               </Link>
             </ListItem>
             <ListItem>
-              <Link to='/Horizontal'>
-                <Typography>Horizontal </Typography>
+              <Link to='/ScrollToItem'>
+                <Typography>Scroll to specific item</Typography>
               </Link>
             </ListItem>
             <ListItem>
               <Link to='/DynamicContent'>
-                <Typography>Items can resize </Typography>
+                <Typography>Items can resize</Typography>
               </Link>
             </ListItem>
-
-            <ListItem>
-              <Link to='/ScrollToItem'>
-                <Typography>Scroll to specific item </Typography>
-              </Link>
-            </ListItem>
-
             <Divider></Divider>
             <ListItem>
-              <Typography variant='h6'>Advanced: </Typography>
+              <Typography variant='h6'>Advanced:</Typography>
             </ListItem>
             <ListItem>
               <Link to='/ResponsiveTable'>
-                <Typography>Responsive table </Typography>
+                <Typography>Responsive table</Typography>
               </Link>
             </ListItem>
             <ListItem>
-              <Link to='/TwoD'>
-                <Typography>2-D table</Typography>
+              <Link to='/Horizontal'>
+                <Typography>Horizontal</Typography>
               </Link>
             </ListItem>
           </List>
@@ -129,10 +122,6 @@ export default function App() {
             <Route path='/DynamicContent'>
               <DynamicContent />
               <Code fileName={'DynamicContent.jsx'}></Code>
-            </Route>
-            <Route path='/'>
-              <BasicUsage />
-              <Code fileName={'BasicUsage.jsx'}></Code>
             </Route>
             <Route path='/Horizontal'>
               <Horizontal></Horizontal>
@@ -145,6 +134,10 @@ export default function App() {
             <Route path='/ScrollToItem'>
               <ScrollToItem></ScrollToItem>
               <Code fileName={'ScrollToItem.jsx'}></Code>
+            </Route>
+            <Route path='/'>
+              <BasicUsage />
+              <Code fileName={'BasicUsage.jsx'}></Code>
             </Route>
           </Switch>
         </main>

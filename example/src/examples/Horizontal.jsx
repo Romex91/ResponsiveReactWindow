@@ -1,34 +1,13 @@
 import React from 'react';
 
 import { ResponsiveReactWindow } from 'responsive-react-window';
-import ResizeObserver from 'rc-resize-observer';
 
 import './styles.css';
 
-// A div maintaining its area by adjusting its height.
-function Item({ initialArea, width }) {
-  const [area, setArea] = React.useState(initialArea);
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    if (!ref.current) return;
-    ref.current.style.minHeight = area / width + 'px';
-  }, [area, width]);
-
-  const grow = () => {
-    setArea(area + 10000);
-  };
-  const shrink = () => {
-    setArea(area - 10000);
-  };
-
+function Item({ text }) {
   return (
-    <div ref={ref} className='item'>
-      Area: {area} pixels
-      <div>
-        <button onClick={grow}>GROW</button>
-        <button onClick={shrink}>SHRINK</button>
-      </div>
+    <div style={{ height: '95%' }} className='item'>
+      {text}
     </div>
   );
 }
@@ -38,25 +17,24 @@ let index = 0;
 const entries = new Array(1000).fill(true).map(() => ({
   // key is mandatory.
   key: (index++).toString(),
-  initialArea: Math.floor(Math.random() * (100 - 20) + 20) * 1000
+  text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris
+    nisi ut aliquip ex ea commodo consequat.`.slice(
+    0,
+    Math.floor(Math.random() * (250 - 20) + 20)
+  )
 }));
 
 export default function App() {
-  const [width, setWidth] = React.useState(200);
-
   return (
-    <ResizeObserver
-      onResize={({ width }) => {
-        setWidth(width);
-      }}
-    >
-      <div className='resizable'>
-        <ResponsiveReactWindow
-          direction='y'
-          entries={entries.map((entry) => ({ width, ...entry }))}
-          ItemComponent={Item}
-        />
-      </div>
-    </ResizeObserver>
+    // ResponsiveReactWindow always takes 100% of its parent's size.
+    <div className='resizable'>
+      <ResponsiveReactWindow
+        direction='x'
+        entries={entries}
+        ItemComponent={Item}
+      />
+    </div>
   );
 }

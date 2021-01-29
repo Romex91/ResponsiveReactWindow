@@ -51,12 +51,14 @@ interface VirtualizedListProps<ItemProps> {
   scrollableContainerRef: React.RefObject<HTMLElement>;
   ItemComponent: ReturnType<typeof React.forwardRef>;
   PlaceholderComponent: React.ComponentType<{ size: number }>;
+  scrollToIndex?: number;
+  onScrolledToIndex?: (this: void) => void;
   direction: 'x' | 'y';
 }
 
-export function CustomReactWindow<
-  ItemProps extends { key: string; focused?: boolean }
->(props: VirtualizedListProps<ItemProps>): JSX.Element {
+export function CustomReactWindow<ItemProps extends { key: string }>(
+  props: VirtualizedListProps<ItemProps>
+): JSX.Element {
   const [parentOffset, setParentOffset] = React.useState(0);
   const parentOffsetMeasuringRef = React.useRef<HTMLDivElement>(null);
 
@@ -122,17 +124,23 @@ export function CustomReactWindow<
   let placeholderTop = 0;
   let placeholderBottom = 0;
 
+  let index = -1;
   for (const entry of props.entries) {
+    index++;
     let entrySize = props.defaultItemSize ?? 80;
     if (realSizesMap.has(entry.key)) {
       entrySize = realSizesMap.get(entry.key);
     }
 
-    if (currentSize + entrySize < scroll - parentOffset - windowSize) {
-      if (entry.focused && !!props.scrollableContainerRef.current) {
-        props.scrollableContainerRef.current.scrollTop = currentSize;
+    if (index === props.scrollToIndex && props.scrollableContainerRef.current) {
+      props.scrollableContainerRef.current.scrollTop = currentSize;
+      if (props.onScrolledToIndex === undefined) {
+        throw new Error('scrollToIndex must be used with onScrolledToIndex');
       }
+      props.onScrolledToIndex();
+    }
 
+    if (currentSize + entrySize < scroll - parentOffset - windowSize) {
       placeholderTop += entrySize;
     } else if (currentSize < scroll - parentOffset + 2 * windowSize) {
       visibleEntries.push(
@@ -145,10 +153,6 @@ export function CustomReactWindow<
         />
       );
     } else {
-      if (entry.focused && props.scrollableContainerRef.current) {
-        props.scrollableContainerRef.current.scrollTop = currentSize;
-      }
-
       placeholderBottom += entrySize;
     }
     currentSize += entrySize;
