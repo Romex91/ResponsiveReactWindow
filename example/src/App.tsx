@@ -15,7 +15,6 @@ import BasicUsage from './examples/BasicUsage';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import Horizontal from './examples/Horizontal';
-import TwoD from './examples/TwoD';
 import ScrollToItem from './examples/ScrollToItem';
 
 const drawerWidth = 160;
@@ -66,6 +65,14 @@ function Code(props: { fileName: string }) {
       onBeforeChange={() => {}}
       onChange={() => {}}
     />
+  );
+}
+
+function DragByTheCornerToResize() {
+  return (
+    <Typography variant='h6' color='secondary' align='right'>
+      Drag by the corner to resize.
+    </Typography>
   );
 }
 
@@ -120,23 +127,32 @@ export default function App() {
         <main className={classes.content}>
           <Switch>
             <Route path='/DynamicContent'>
-              <DynamicContent />
+              <div>
+                <DynamicContent />
+                <DragByTheCornerToResize />
+              </div>
               <Code fileName={'DynamicContent.jsx'}></Code>
             </Route>
             <Route path='/Horizontal'>
-              <Horizontal></Horizontal>
+              <div>
+                <Horizontal />
+                <DragByTheCornerToResize />
+              </div>
               <Code fileName={'Horizontal.jsx'}></Code>
             </Route>
-            <Route path='/TwoD'>
-              <TwoD></TwoD>
-              <Code fileName={'TwoD.jsx'}></Code>
-            </Route>
             <Route path='/ScrollToItem'>
-              <ScrollToItem></ScrollToItem>
+              <div>
+                <ScrollToItem />
+                <DragByTheCornerToResize />
+              </div>
+
               <Code fileName={'ScrollToItem.jsx'}></Code>
             </Route>
             <Route path='/'>
-              <BasicUsage />
+              <div>
+                <BasicUsage />
+                <DragByTheCornerToResize />
+              </div>
               <Code fileName={'BasicUsage.jsx'}></Code>
             </Route>
           </Switch>

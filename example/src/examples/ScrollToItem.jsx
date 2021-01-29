@@ -10,14 +10,16 @@ function Item({ text }) {
 
 let index = 0;
 const entries = new Array(1000).fill(null).map(() => ({
-  key: (index++).toString(),
-  text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+  key: index.toString(),
+  text:
+    index++ +
+    `.Lorem ipsum dolor sit amet, consectetur adipiscing elit,
     sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
     Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris
     nisi ut aliquip ex ea commodo consequat.`.slice(
-    0,
-    Math.floor(Math.random() * (250 - 20) + 20)
-  )
+      0,
+      Math.floor(Math.random() * (250 - 20) + 20)
+    )
 }));
 
 export default function App() {

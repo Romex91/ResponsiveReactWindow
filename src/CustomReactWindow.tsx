@@ -62,6 +62,11 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
   const [parentOffset, setParentOffset] = React.useState(0);
   const parentOffsetMeasuringRef = React.useRef<HTMLDivElement>(null);
 
+  const [scrollToAttempts, setScrollToAttempts] = React.useState(0);
+  React.useEffect(() => {
+    setScrollToAttempts(0);
+  }, [props.scrollToIndex]);
+
   const [scroll, setScroll] = React.useState(0);
   const [windowSize, setWindowSize] = React.useState(
     props.direction === 'y' ? window.innerHeight : window.innerWidth
@@ -97,15 +102,17 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
 
   React.useEffect(() => {
     const onResizeOrScroll = () => {
-      if (props.scrollableContainerRef.current)
+      const container = props.scrollableContainerRef.current;
+      if (container) {
         setScroll(
-          props.direction === 'y'
-            ? props.scrollableContainerRef.current.scrollTop
-            : props.scrollableContainerRef.current.scrollLeft
+          props.direction === 'y' ? container.scrollTop : container.scrollLeft
         );
-      setWindowSize(
-        props.direction === 'y' ? window.innerHeight : window.innerWidth
-      );
+        setWindowSize(
+          props.direction === 'y'
+            ? container.offsetHeight
+            : container.offsetWidth
+        );
+      }
 
       if (parentOffsetMeasuringRef.current) {
         setParentOffset(parentOffsetMeasuringRef.current.offsetTop);
@@ -125,6 +132,7 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
   let placeholderBottom = 0;
 
   let index = -1;
+  let scrollToSize: number | null = null;
   for (const entry of props.entries) {
     index++;
     let entrySize = props.defaultItemSize ?? 80;
@@ -132,12 +140,8 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
       entrySize = realSizesMap.get(entry.key);
     }
 
-    if (index === props.scrollToIndex && props.scrollableContainerRef.current) {
-      props.scrollableContainerRef.current.scrollTop = currentSize;
-      if (props.onScrolledToIndex === undefined) {
-        throw new Error('scrollToIndex must be used with onScrolledToIndex');
-      }
-      props.onScrolledToIndex();
+    if (index === props.scrollToIndex) {
+      scrollToSize = currentSize + parentOffset;
     }
 
     if (currentSize + entrySize < scroll - parentOffset - windowSize) {
@@ -171,6 +175,28 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
       />
     );
   }
+
+  // |props.scrollToIndex| handling.
+  // It is often impossible to predict size of hidden elements. That's why scrolling to an
+  // index of a hidden element is inaccurate.
+  // To compensate for this we make 5 scrolling attempts until calling |onScrolledToIndex|.
+  // It may be a dirty workaround but it works.
+  React.useEffect(() => {
+    if (scrollToAttempts === 5) {
+      if (props.onScrolledToIndex === undefined) {
+        throw new Error('scrollToIndex must be used with onScrolledToIndex');
+      }
+      props.onScrolledToIndex();
+    } else {
+      const container = props.scrollableContainerRef.current;
+      if (scrollToSize != null && container) {
+        container.scrollTop = scrollToSize;
+        setTimeout(() => {
+          setScrollToAttempts(scrollToAttempts + 1);
+        }, 300);
+      }
+    }
+  }, [scrollToAttempts, props.scrollToIndex]);
 
   return (
     <React.Fragment>
