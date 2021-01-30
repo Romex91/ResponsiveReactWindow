@@ -9,7 +9,7 @@ import {
   Typography
 } from '@material-ui/core';
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import DynamicContent from './examples/DynamicContent';
 import BasicUsage from './examples/BasicUsage';
 
@@ -53,7 +53,7 @@ function Code(props: { fileName: string }) {
   React.useEffect(() => {
     (async () => {
       const content = await fetch(
-        process.env.PUBLIC_URL + 'examples/' + props.fileName
+        process.env.PUBLIC_URL + '/examples/' + props.fileName
       );
       setValue(await content.text());
     })();
@@ -85,7 +85,7 @@ export default function App() {
 
   return (
     <div className={classes.root}>
-      <Router basename='responsive-react-window'>
+      <Router>
         <Drawer
           className={classes.drawer}
           variant='permanent'
