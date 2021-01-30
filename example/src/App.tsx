@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   Divider,
   Drawer,
@@ -18,7 +19,7 @@ import Horizontal from './examples/Horizontal';
 import ScrollToItem from './examples/ScrollToItem';
 import ResponsiveTable from './examples/ResponsiveTable';
 
-const drawerWidth = 160;
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,6 +96,14 @@ export default function App() {
           }}
           anchor='left'
         >
+          <ListItem>
+            <Button
+              href='https://www.npmjs.com/package/responsive-react-window'
+              color='secondary'
+            >
+              responsive-react-window
+            </Button>
+          </ListItem>
           <List>
             <ListItem>
               <Link to='/'>
