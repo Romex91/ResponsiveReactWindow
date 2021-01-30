@@ -4,6 +4,17 @@
 
 [![NPM](https://img.shields.io/npm/v/responsive-react-window.svg)](https://www.npmjs.com/package/responsive-react-window) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+## Consider using [react-virtuoso](https://www.npmjs.com/package/react-virtuoso)
+react-virtuoso is very similar to this package. It is more feature-rich and much more popular.
+
+The whole story with responsive-react-window is rather embarrassing for me:
+1) I noticed that react-window is not responsive
+2) I implemented and published responsive-react-window
+3) I found react-virtuoso
+
+I'll leave this package published as a redirection to react-virtuoso for those who are searching for a responsive version of react-window.
+
+I also leave it here for personal use (surprise, I find the syntax to be better than react-virtuoso, although I admit I'm extremely biased).
 ## Install
 
 ```bash
