@@ -85,7 +85,7 @@ export default function App() {
 
   return (
     <div className={classes.root}>
-      <Router>
+      <Router basename='responsive-react-window'>
         <Drawer
           className={classes.drawer}
           variant='permanent'
