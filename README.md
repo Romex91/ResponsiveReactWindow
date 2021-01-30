@@ -8,9 +8,9 @@
 react-virtuoso is very similar to this package. It is more feature-rich and much more popular.
 
 The whole story with responsive-react-window is rather embarrassing for me:
-1) I noticed that react-window is not responsive
-2) I implemented and published responsive-react-window
-3) I found react-virtuoso
+1) noticed that react-window is not responsive
+2) implemented and published responsive-react-window
+3) discovered react-virtuoso
 
 I'll leave this package published as a redirection to react-virtuoso for those who are searching for a responsive version of react-window.
 
