@@ -28,6 +28,7 @@ function LongList(props) {
 ```
 use this:
 ```jsx
+import { ResponsiveReactWindow } from 'responsive-react-window';
 function LongList(props) {
   return (
     <ResponsiveReactWindow entries={props.entries} ItemComponent={Item} />
