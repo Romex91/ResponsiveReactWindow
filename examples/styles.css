@@ -1,0 +1,57 @@
+.item {
+  margin: 5px;
+  background-color: lightgray;
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resizable {
+  position: relative;
+  resize: both;
+  width: 400px;
+  height: 400px;
+  overflow: hidden;
+  padding: 10px 15px 15px 5px;
+  margin: 10px;
+  border: solid 1px black;
+}
+
+/* A workaround to a chrome bug :] */
+/* Resize handle gets invisible for elements with will-change:transform children */
+.resizable::after {
+  content: ' ';
+  position: absolute;
+}
+
+button {
+  margin: 10px;
+}
+
+/* Responsive Table */
+td,
+th {
+  border: 1px solid black;
+}
+th {
+  color: #f50057;
+  font-size: 24px;
+}
+td {
+  width: 50%;
+}
+
+@media screen and (max-width: 1000px) {
+  tr {
+    display: grid;
+  }
+  th {
+    margin-bottom: 2px;
+  }
+  td {
+    width: 95%;
+    margin: auto;
+    margin-bottom: 2px;
+  }
+}
