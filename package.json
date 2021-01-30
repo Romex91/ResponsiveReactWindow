@@ -61,6 +61,7 @@
     "dist"
   ],
   "dependencies": {
+    "prop-types": "^15.7.2",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

@@ -16,6 +16,7 @@ import BasicUsage from './examples/BasicUsage';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import Horizontal from './examples/Horizontal';
 import ScrollToItem from './examples/ScrollToItem';
+import ResponsiveTable from './examples/ResponsiveTable';
 
 const drawerWidth = 160;
 
@@ -37,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(3),
 
       [theme.breakpoints.up('md')]: {
+        '& >div': {
+          flex: 1
+        },
         display: 'flex',
         height: '100vh'
       }
@@ -70,7 +74,7 @@ function Code(props: { fileName: string }) {
 
 function DragByTheCornerToResize() {
   return (
-    <Typography variant='h6' color='secondary' align='right'>
+    <Typography variant='h6' color='secondary' align='center'>
       Drag by the corner to resize.
     </Typography>
   );
@@ -155,12 +159,28 @@ export default function App() {
                 <Code fileName={'Horizontal.jsx'}></Code>
               </div>
             </Route>
+            <Route path='/ResponsiveTable'>
+              <div>
+                <ResponsiveTable />
+                <Typography variant='h6' style={{ margin: 20 }}>
+                  You can customize every html element by using{' '}
+                  <Typography
+                    variant='inherit'
+                    display='inline'
+                    color='primary'
+                  >
+                    CustomReactWindow
+                  </Typography>
+                  :
+                </Typography>
+                <Code fileName={'ResponsiveTable.jsx'}></Code>
+              </div>
+            </Route>
             <Route path='/ScrollToItem'>
               <div>
                 <ScrollToItem />
                 <DragByTheCornerToResize />
               </div>
-
               <Code fileName={'ScrollToItem.jsx'}></Code>
             </Route>
             <Route path='/'>

@@ -13,7 +13,7 @@
   width: 400px;
   height: 400px;
   overflow: hidden;
-  padding: 10px;
+  padding: 10px 15px 15px 5px;
   margin: 10px;
   border: solid 1px black;
 }
@@ -27,4 +27,31 @@
 
 button {
   margin: 10px;
+}
+
+/* Responsive Table */
+td,
+th {
+  border: 1px solid black;
+}
+th {
+  color: #f50057;
+  font-size: 24px;
+}
+td {
+  width: 50%;
+}
+
+@media screen and (max-width: 1000px) {
+  tr {
+    display: grid;
+  }
+  th {
+    margin-bottom: 2px;
+  }
+  td {
+    width: 95%;
+    margin: auto;
+    margin-bottom: 2px;
+  }
 }

@@ -1,8 +1,10 @@
 import React from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
+import PropTypes from 'prop-types';
 
 interface VirtualizedItemProps<ItemProps> {
   onSizeChanged(key: string, heigh: number): void;
+  onParentOffset?(offset: number): void;
   itemProps: ItemProps;
   ItemComponent: ReturnType<typeof React.forwardRef>;
   direction: 'x' | 'y';
@@ -15,13 +17,19 @@ class VirtualizedItem<
   _resizeObserver?: ResizeObserver;
 
   private onSizeChanged = () => {
-    if (this._ref.current) {
+    const element = this._ref.current;
+    if (element) {
       this.props.onSizeChanged(
         this.props.itemProps.key,
         this.props.direction === 'y'
-          ? this._ref.current.offsetHeight
-          : this._ref.current.offsetWidth
+          ? element.offsetHeight
+          : element.offsetWidth
       );
+      if (this.props.onParentOffset) {
+        this.props.onParentOffset(
+          this.props.direction === 'y' ? element.offsetTop : element.offsetLeft
+        );
+      }
     }
   };
 
@@ -51,16 +59,28 @@ interface VirtualizedListProps<ItemProps> {
   scrollableContainerRef: React.RefObject<HTMLElement>;
   ItemComponent: ReturnType<typeof React.forwardRef>;
   PlaceholderComponent: React.ComponentType<{ size: number }>;
+  direction: 'x' | 'y';
+
   scrollToIndex?: number;
   onScrolledToIndex?: (this: void) => void;
-  direction: 'x' | 'y';
 }
+
+CustomReactWindow.propTypes = {
+  entries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  defaultItemSize: PropTypes.number,
+  scrollableContainerRef: PropTypes.object.isRequired,
+  ItemComponent: PropTypes.elementType.isRequired,
+  PlaceholderComponent: PropTypes.elementType.isRequired,
+  direction: PropTypes.oneOf(['x', 'y']).isRequired,
+
+  scrollToIndex: PropTypes.number,
+  onScrolledToIndex: PropTypes.func
+};
 
 export function CustomReactWindow<ItemProps extends { key: string }>(
   props: VirtualizedListProps<ItemProps>
 ): JSX.Element {
   const [parentOffset, setParentOffset] = React.useState(0);
-  const parentOffsetMeasuringRef = React.useRef<HTMLDivElement>(null);
 
   const [scrollToAttempts, setScrollToAttempts] = React.useState(0);
   React.useEffect(() => {
@@ -113,13 +133,11 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
             : container.offsetWidth
         );
       }
-
-      if (parentOffsetMeasuringRef.current) {
-        setParentOffset(parentOffsetMeasuringRef.current.offsetTop);
-      }
     };
     if (props.scrollableContainerRef.current)
       props.scrollableContainerRef.current.onscroll = onResizeOrScroll;
+    else console.error('scrollableContainerRef is not set');
+
     window.addEventListener('resize', onResizeOrScroll);
     return () => {
       window.removeEventListener('resize', onResizeOrScroll);
@@ -154,6 +172,7 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
           itemProps={entry}
           direction={props.direction}
           ItemComponent={props.ItemComponent}
+          onParentOffset={index === 0 ? setParentOffset : undefined}
         />
       );
     } else {
@@ -198,10 +217,5 @@ export function CustomReactWindow<ItemProps extends { key: string }>(
     }
   }, [scrollToAttempts, props.scrollToIndex]);
 
-  return (
-    <React.Fragment>
-      <div ref={parentOffsetMeasuringRef} />
-      {visibleEntries}
-    </React.Fragment>
-  );
+  return <React.Fragment>{visibleEntries}</React.Fragment>;
 }
