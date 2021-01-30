@@ -36,14 +36,14 @@ function LongList(props) {
 }
 ```
 
-[Usage examples](https://romex91.github.io/responsive-react-window/) 
+### [Usage examples](https://romex91.github.io/responsive-react-window/) 
 
 ## Comparison to [react-window](https://github.com/bvaughn/react-window)
 |                            | react-window                 | responsive-react-window         |
 | ---------------------------|:----------------------------:| -------------------------------:|
 | Replaces hidden items with | CSS styles                   | placeholder HTML element        |
 | Items sizes are            |specified in props            |measured automatically           |
-| Responsiveness             |needs to be implemented by you|works out of the box             |
+| Items Responsiveness       |needs to be implemented by you|works out of the box             |
 
 
 
